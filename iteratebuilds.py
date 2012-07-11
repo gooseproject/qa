@@ -5,7 +5,8 @@
 #we should be able to grab the rpm from this url reliably below
 
 import koji
-import urllib
+import urllib2
+from urllib2 import HTTPError, URLError
 
 tag = "gl6-beta"
 host = 'http://koji.gooselinux.org'
@@ -18,28 +19,45 @@ kojiclient = koji.ClientSession('http://koji.gooselinux.org/kojihub', {})
 pkgs = kojiclient.listPackages(tagID=11,inherited=True)
 
 #temporary hack to only include one package for testing
-pkgs = pkgs[0:1]
+pkgs = pkgs[0:4]
 
-# PSEUDOCODE STARTS HERE
 for p in pkgs:
     print p
     # get build package is in
     for build in kojiclient.listBuilds(packageID=p['package_id']):
         if 'gl6' in build['release']:
-            for rpm in kojiclient.listRPMs(buildID=build['build_id']):
+            print 'downloading {0}'.format(p['package_name'])
+            rpms = kojiclient.listRPMs(buildID=build['build_id'])
+#            print 'RPMS: {0}'.format(rpms)
+            for rpm in rpms:
+                 print 'downloading {0}-{1}-{2}.{3}'.format(p['package_name'], rpm['version'], rpm['release'], rpm['arch'])
                 if 'src' not in rpm['arch']:
-                    print 'downloading {0}-{1}-{2}.{3}'.format(p['package_name'], rpm['version'], rpm['release'], rpm['arch'])
-
+#
                     full_rpm = '{0}-{1}-{2}.{3}.rpm'.format(rpm['name'], rpm['version'], rpm['release'], rpm['arch'])
-
                     full_url = '{0}/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}'.format(host, base_uri, p['package_name'], rpm['version'], 
                                                                     rpm['release'], signed_path, gpg_key_id, rpm['arch'],
                                                                     full_rpm)
+#
+#                    print 'full rpm: {0}'.format(full_rpm)
+#                    print 'full url: {0}'.format(full_url)
 
-                    print 'full rpm: {0}'.format(full_rpm)
-                    print 'full url: {0}'.format(full_url)
+                    print 'downloading {0}-{1}-{2}.{3}'.format(p['package_name'], rpm['version'], rpm['release'], rpm['arch'])
+                    try:
+                        f = urllib2.urlopen(full_url)
+                    
+                        # Open our local file for writing
+                        file_path = '{0}/{1}'.format(download_path, full_rpm)
+                        local_file = open(file_path, 'wb', 0644)
+                        #Write to our local file
+                        local_file.write(f.read())
+                        local_file.close()
+                    
+                    #handle errors
+                    except HTTPError, e:
+                        print "HTTP Error:",e.code , full_url
+                    except URLError, e:
+                        print "URL Error:",e.reason , full_url
 
-                    urllib.urlretrieve(full_url, '{0}/{1}'.format(download_path, full_rpm))
 
     # need to do some magic to determine if right build (using release?)
     #build = kojiclient.listBuilds(packageID=foo['package_id'])[0]

@@ -1,17 +1,46 @@
 #!/usr/bin/python
-from __future__ import print_function
+
+#URLS look like this for an individual rpm
+#http://koji.gooselinux.org/mnt/koji/packages/goose-logos/60.0.15/3.gl6/data/signed/1cdbbb39/noarch/goose-logos-60.0.15-3.gl6.noarch.rpm
+#we should be able to grab the rpm from this url reliably below
+
 import koji
-from operator import itemgetter
-kojiclient = koji.ClientSession('http://koji.gooselinux.org/kojihub', {})
+import urllib
 
 tag = "gl6-beta"
+host = 'http://koji.gooselinux.org'
+base_uri = 'mnt/koji/packages'
+signed_path = 'data/signed'
+gpg_key_id = '1cdbbb39' 
+download_path = '/tmp'
 
+kojiclient = koji.ClientSession('http://koji.gooselinux.org/kojihub', {})
 pkgs = kojiclient.listPackages(tagID=11,inherited=True)
 
+#temporary hack to only include one package for testing
+pkgs = pkgs[0:1]
+
 # PSEUDOCODE STARTS HERE
-#for i in pkgs:
+for p in pkgs:
+    print p
     # get build package is in
-    #kojiclient.listBuilds(packageID=foo['package_id'])
+    for build in kojiclient.listBuilds(packageID=p['package_id']):
+        if 'gl6' in build['release']:
+            for rpm in kojiclient.listRPMs(buildID=build['build_id']):
+                if 'src' not in rpm['arch']:
+                    print 'downloading {0}-{1}-{2}.{3}'.format(p['package_name'], rpm['version'], rpm['release'], rpm['arch'])
+
+                    full_rpm = '{0}-{1}-{2}.{3}.rpm'.format(rpm['name'], rpm['version'], rpm['release'], rpm['arch'])
+
+                    full_url = '{0}/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}'.format(host, base_uri, p['package_name'], rpm['version'], 
+                                                                    rpm['release'], signed_path, gpg_key_id, rpm['arch'],
+                                                                    full_rpm)
+
+                    print 'full rpm: {0}'.format(full_rpm)
+                    print 'full url: {0}'.format(full_url)
+
+                    urllib.urlretrieve(full_url, '{0}/{1}'.format(download_path, full_rpm))
+
     # need to do some magic to determine if right build (using release?)
     #build = kojiclient.listBuilds(packageID=foo['package_id'])[0]
     # get rpms from build

@@ -6,6 +6,9 @@ specs/
 requires/
 build/
 install/
+_build/
+_static/
+_templates/
 .*.sw[po]
 *.py[co]
 

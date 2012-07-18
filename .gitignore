@@ -11,6 +11,7 @@ _static/
 _templates/
 .*.sw[po]
 *.py[co]
+6.[0-9]/
 
 skein.cfg.*
 

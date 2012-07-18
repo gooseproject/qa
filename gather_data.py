@@ -4,6 +4,7 @@
 #http://koji.gooselinux.org/mnt/koji/packages/goose-logos/60.0.15/3.gl6/data/signed/1cdbbb39/noarch/goose-logos-60.0.15-3.gl6.noarch.rpm
 #we should be able to grab the rpm from this url reliably below
 
+import os, sys
 import koji
 import urllib2
 from urllib2 import HTTPError, URLError
@@ -18,8 +19,24 @@ download_path = '/tmp'
 kojiclient = koji.ClientSession('http://koji.gooselinux.org/kojihub', {})
 pkgs = kojiclient.listPackages(tagID=11,inherited=True)
 
+template_dir = '6.x'
+release = '6.0'
+
+docs_basedir = '/home/clints/Projects/gooseproject/qa'
+docs_index = 'index.rst'
+
 #temporary hack to only include one package for testing
-pkgs = pkgs[0:1]
+pkgs = pkgs[0:4]
+
+dest_dir = '{0}/GoOSe/{1}'.format(docs_basedir, release)
+
+if not os.path.exists(dest_dir):
+    os.makedirs(dest_dir, 0755)
+
+index_src = open('{0}/{1}/{2}'.format(docs_basedir, template_dir, docs_index), 'r')
+index_dst = open('{0}/{1}'.format(dest_dir, docs_index), 'w')
+index_dst.write(index_src.read() % {'release': release})
+
 
 for p in pkgs:
     print p
@@ -38,6 +55,7 @@ for p in pkgs:
                 #Write to our local file
                 local_file.write(x)
                 local_file.close()
+
 
 
 

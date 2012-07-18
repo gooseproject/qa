@@ -11,7 +11,6 @@ GoOSe Linux Packages with Verification
     :glob:
 
     6.0/index
-    6.x/index
 
 Indices and tables
 ==================

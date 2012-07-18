@@ -6,29 +6,13 @@ The goal of this list is to provide a functional way for verification and valida
 
 Full list with ldd/sha256sum verifications can be downloaded `here <http://github.com/gooseproject/qa/fileverify/tarballs/%(release)s/GoOSe-verify-%(release)s.tar.gz>`_.
 
-Changed Packages
-----------------
+32-bit package detail
+---------------------
 
-Some packages needed adjustments, renames or did not get included for one reason or another. Details are below in the appropriate section.
+.. include:: 32-bit-packages.rst
 
-Packages Altered from Upstream
-++++++++++++++++++++++++++++++
+64-bit package detail
+---------------------
 
-.. include:: altered-packages.rst
+.. include:: 64-bit-packages.rst
 
-Missing Packages from Upstream
-++++++++++++++++++++++++++++++
-
-.. include:: missing-packages.rst
-
-
-Packages Renamed from Upstream
-++++++++++++++++++++++++++++++
-
-.. include:: renamed-packages.rst
-
-
-Unchanged Packages
------------------------
-
-.. include:: packages.rst

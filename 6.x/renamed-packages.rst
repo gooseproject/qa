@@ -1,0 +1,1 @@
+%(renamed_pkgs)s

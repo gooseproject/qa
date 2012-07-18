@@ -19,44 +19,26 @@ kojiclient = koji.ClientSession('http://koji.gooselinux.org/kojihub', {})
 pkgs = kojiclient.listPackages(tagID=11,inherited=True)
 
 #temporary hack to only include one package for testing
-pkgs = pkgs[0:4]
+pkgs = pkgs[0:1]
 
 for p in pkgs:
     print p
     # get build package is in
     for build in kojiclient.listBuilds(packageID=p['package_id']):
         if 'gl6' in build['release']:
-            print 'downloading {0}'.format(p['package_name'])
-            rpms = kojiclient.listRPMs(buildID=build['build_id'])
-#            print 'RPMS: {0}'.format(rpms)
-            for rpm in rpms:
-                 print 'downloading {0}-{1}-{2}.{3}'.format(p['package_name'], rpm['version'], rpm['release'], rpm['arch'])
-                if 'src' not in rpm['arch']:
-#
-                    full_rpm = '{0}-{1}-{2}.{3}.rpm'.format(rpm['name'], rpm['version'], rpm['release'], rpm['arch'])
-                    full_url = '{0}/{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}'.format(host, base_uri, p['package_name'], rpm['version'], 
-                                                                    rpm['release'], signed_path, gpg_key_id, rpm['arch'],
-                                                                    full_rpm)
-#
-#                    print 'full rpm: {0}'.format(full_rpm)
-#                    print 'full url: {0}'.format(full_url)
+            children = kojiclient.getTaskChildren(build['task_id'])
+            for c in [child['id'] for child in children if child['method'] == 'buildArch']:
+                info = kojiclient.listTaskOutput(c)
+                print 'downloading {0}'.format(info[0])
+                x = kojiclient.downloadTaskOutput(c, info[0])
+                # ^^ gives you the entire RPM in a string, scary!
 
-                    print 'downloading {0}-{1}-{2}.{3}'.format(p['package_name'], rpm['version'], rpm['release'], rpm['arch'])
-                    try:
-                        f = urllib2.urlopen(full_url)
-                    
-                        # Open our local file for writing
-                        file_path = '{0}/{1}'.format(download_path, full_rpm)
-                        local_file = open(file_path, 'wb', 0644)
-                        #Write to our local file
-                        local_file.write(f.read())
-                        local_file.close()
-                    
-                    #handle errors
-                    except HTTPError, e:
-                        print "HTTP Error:",e.code , full_url
-                    except URLError, e:
-                        print "URL Error:",e.reason , full_url
+                file_path = '{0}/{1}'.format(download_path, info[0])
+                local_file = open(file_path, 'wb', 0644)
+                #Write to our local file
+                local_file.write(x)
+                local_file.close()
+
 
 
     # need to do some magic to determine if right build (using release?)

@@ -1,0 +1,14 @@
+download and install rpm
+
+name
+summary
+requires
+files
+ paths
+ md5/sha
+ type
+ abi on binaries
+  ldd
+  symbols?
+
+

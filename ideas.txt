@@ -1,3 +1,30 @@
+Breakdown of scripts
+
+generate_canonical.py
+ - pulls from spacewalk-remote-utils.noarch as a canonical 
+   list from upstream
+ - pulls from koji.gooselinux.org for a specified tag as a 
+   canonical list for GoOSe
+ - sorts both lists and writes each to a text file
+
+compare_pkgs_with_upstream.py
+ - loads the two files generated above and a known list of 
+   changes. Compares the two files and returns 
+   the following results for each architecture:
+   - which packages are in upstream but not GoOSe (missing)
+   - which packages have been altered from upstream (altered)
+   - all other packages (remaining)
+
+gather_data.py (will be renamed to generate_rpm_data.py)
+ - pulls down RPMS from each of the lists above as appropriate
+ - generates a page for each RPM with the following:
+   - name, summary and sha256sum of the rpm itself
+   - the equivalent of rpm -qp --dump RPM - which generates a 
+     list of each file and its useful values
+   - for each binary in the rpm, perform an ldd dump
+
+
+
 download and install rpm
 
 name

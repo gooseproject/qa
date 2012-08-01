@@ -112,7 +112,7 @@ Binary files with ABI output
 
 Below is each file along with the output of running :command:`ldd` against each binary::
 
- /usr/bin/bash
+ /bin/bash
     linux-vdso.so.1 =>  (0x00007fff6a7ff000)
     libtinfo.so.5 => /lib64/libtinfo.so.5 (0x0000003d35200000)
     libdl.so.2 => /lib64/libdl.so.2 (0x0000003d24e00000)

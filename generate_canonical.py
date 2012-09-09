@@ -59,7 +59,6 @@ def _get_packages(pkgs, host, slice_size=100):
     slice_start=0
 
     loops = (len(pkgs) / 100)
-    loops = 3
     last_loop = (len(pkgs) % 100)
     rpm_list = set()
 

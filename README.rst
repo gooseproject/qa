@@ -22,6 +22,10 @@ compare_pkgs_with_upstream.py
 generate_rpm_data.py
 ====================
 
+This script does two basic things::
+
+ - generates a list of missing packages based upon the list from
+   spacewalk-remote-utils
  - generates a page for each existing RPM with the following::
 
    - name, summary and sha256sum of the rpm itself

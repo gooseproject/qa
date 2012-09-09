@@ -16,13 +16,12 @@ compare_pkgs_with_upstream.py
    - all other packages (remaining)
 
 gather_data.py (will be renamed to generate_rpm_data.py)
- - pulls down RPMS from each of the lists above as appropriate
+ - pulls down RPMS from koji based upon lists above
  - generates a page for each RPM with the following:
    - name, summary and sha256sum of the rpm itself
    - the equivalent of rpm -qp --dump RPM - which generates a 
      list of each file and its useful values
    - for each binary in the rpm, perform an ldd dump
-
 
 
 download and install rpm

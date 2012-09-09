@@ -1,3 +1,7 @@
+# generate_canonical.py
+# - pulls from spacewalk-remote-utils.noarch as a canonical
+#   list from upstream, sorts and and writes each to a text file
+
 import os, sys
 import koji
 import time

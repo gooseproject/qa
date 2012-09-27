@@ -50,7 +50,13 @@ def find_missing_pkgs(tag, host, base_uri, signed_path, gpg_key_id, file_to_read
 
         for rpm in rpms[slice_start:slice_end]:
 
-            r = rpm.replace('el6', 'gl6')
+            old = 'el6'
+            new = 'gl6'
+
+            sr = rpm.rsplit(old, 1)
+            r = new.join(sr)
+
+#            r = rpm.replace('el6', 'gl6')
             r = r.replace('\n', '')
 
             # try to find packages matching r

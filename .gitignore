@@ -18,3 +18,4 @@ skein.cfg.*
 # ignore files with sensitive data
 gh_settings.py
 github_settings.py
+output
